@@ -4,12 +4,15 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 from openai import OpenAI
 
-# ⚙️ Տեղադրիր քո միջավայրային փոփոխականները (.env կամ environment-ում)
-OPENAI_API_KEY = os.getenv("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")
-TELEGRAM_TOKEN = os.getenv("7722656054:AAFHWRyWpEBuRWtLseXOiuZ1U608tTuPEkg")
+# ✅ Այստեղ ուղղակի գրիր բանալիները (առանց getenv)
+OPENAI_API_KEY = "OPENAI_API_KEY"
+TELEGRAM_TOKEN = "TELEGRAM_TOKEN"
 
 if not OPENAI_API_KEY or not TELEGRAM_TOKEN:
     raise RuntimeError("OPENAI_API_KEY կամ TELEGRAM_TOKEN չեն սահմանված միջավայրում։")
+
+# 🧠 Կապվիր OpenAI-ի հետ
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -47,8 +50,9 @@ async def solve_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(answer)
 
     except Exception as e:
+        print("❌ OPENAI ERROR:", e)
         await update.message.reply_text("⚠️ Սխալ տեղի ունեցավ։ Փորձիր կրկին։")
-        logging.error(e)
+
 
 # 🚀 Գլխավոր ֆունկցիա
 def main():
